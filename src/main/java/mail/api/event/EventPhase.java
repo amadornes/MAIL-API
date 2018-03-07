@@ -15,26 +15,49 @@ public enum EventPhase {
      * It should only be used to cancel/uncancel the event.
      * </b></p>
      */
-    CANCELLATION,
+    CANCELLATION {
+        @Override
+        public boolean canGoAfter(EventPhase phase) {
+            return false;
+        }
+    },
     /**
      * First functional phase of an {@link Event}'s lifecycle.
      * <p>
      * Mainly used to set up the state before the {@link #DEFAULT} phase.
      * </p>
      */
-    PRE,
+    PRE {
+        @Override
+        public boolean canGoAfter(EventPhase phase) {
+            return phase == null || phase == CANCELLATION;
+        }
+    },
     /**
      * Second (and main) functional phase of an {@link Event}'s lifecycle.
      * <p>
      * This phase is where most of the interactions should happen and is the default for all subscribers.
      * </p>
      */
-    DEFAULT,
+    DEFAULT{
+        @Override
+        public boolean canGoAfter(EventPhase phase) {
+            return phase == PRE;
+        }
+    },
     /**
      * Last functional phase of an {@link Event}'s lifecycle.
      * <p>
      * Mainly used to reset the states altered in the {@link #PRE} phase.
      * </p>
      */
-    POST
+    POST{
+        @Override
+        public boolean canGoAfter(EventPhase phase) {
+            return phase == DEFAULT;
+        }
+    };
+
+    public abstract boolean canGoAfter(EventPhase phase);
+
 }

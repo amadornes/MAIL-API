@@ -48,9 +48,9 @@ public interface Event {
     interface Generic extends Event {
 
         /**
-         * Gets the generic type of this event by index.
+         * Checks whether or not the generic type in the specified index matches this event's requirements.
          */
-        Class<?> getGenericType(int index);
+        boolean matchesGenericType(Class<? extends Event.Generic> eventType, int index, Class<?> type);
 
     }
 
@@ -133,6 +133,14 @@ public interface Event {
          * </p>
          */
         boolean receiveCanceled() default false;
+
+        /**
+         * Determines whether the annotated method will always receive events, or only if it is overridden.
+         * <p>
+         * Default: {@code false}
+         * </p>
+         */
+        boolean deferred() default false;
 
     }
 
